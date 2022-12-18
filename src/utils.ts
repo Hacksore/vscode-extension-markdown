@@ -2,7 +2,8 @@ import got from "got";
 import { Extension } from "./types";
 
 export async function getExtensionData(id: string) {
-  const data = JSON.stringify({
+  console.log(`Fetching ${id} extension info from the networok`);
+  const body = {
     assetTypes: null,
     filters: [
       {
@@ -16,9 +17,9 @@ export async function getExtensionData(id: string) {
       },
     ],
     flags: 2151,
-  });
+  };
 
-  const req = await got(
+  const payload = await fetch(
     "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery",
     {
       method: "POST",
@@ -26,17 +27,14 @@ export async function getExtensionData(id: string) {
         "Content-Type": "application/json",
         Accept: "application/json;api-version=7.1-preview.1;excludeUrls=true",
       },
-      body: data,
+      body: JSON.stringify(body),
     }
-  );
-
-  if (req.statusCode !== 200) {
+  )
+  .then(res => res.json())
+  .catch(err => {
     console.log("Error getting " + id);
-    console.log(req.body);
-    return null;
-  }
-
-  const payload = JSON.parse(req.body);
+    console.log(err);
+  })
 
   return payload.results[0].extensions[0];
 }
