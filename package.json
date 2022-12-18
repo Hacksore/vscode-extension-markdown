@@ -21,7 +21,6 @@
     "extdump": "./dist/index.js"
   },
   "dependencies": {
-    "clipboardy": "^3.0.0",
-    "got": "^12.5.3"
+    "clipboardy": "^3.0.0"
   }
 }
