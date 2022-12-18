@@ -1,8 +1,6 @@
-import got from "got";
-import { Extension } from "./types";
+import { Extension, Version } from "./types";
 
 export async function getExtensionData(id: string) {
-  console.log(`Fetching ${id} extension info from the networok`);
   const body = {
     assetTypes: null,
     filters: [
@@ -43,15 +41,23 @@ export function createLink(id: string) {
   return `https://marketplace.visualstudio.com/items?itemName=${id}`;
 }
 
+function getExtensionId(extension: Extension) {
+  return `${extension.publisher.publisherName}.${extension.extensionName}`;
+}
+
+function getIcon(latestVersion: Version) {
+  const icon =  latestVersion.files.find(file => file.assetType === 'Microsoft.VisualStudio.Services.Icons.Small');
+  const defaultIcon = `https://cdn.vsassets.io/v/M213_20221206.3/_content/Header/default_icon_128.png`;
+  return icon ? icon.source : defaultIcon;
+}
+
 export function createMarkdownTable(extensions: Extension[]) {
   const rows = extensions.map((extension) => {
-    const latestVersion = extension.versions[0];
+    const [latestVersion] = extension.versions;
 
-    return `| <a href="${createLink(extension.id)}"><img width="100" src="${
-      latestVersion.assetUri
-    }/Microsoft.VisualStudio.Services.Icons.Default" alt="${
+    return `| <a href="${createLink(getExtensionId(extension))}"><img width="100" src="${getIcon(latestVersion)}" alt="${
       extension.displayName
-    }"> | <h3><a href="${createLink(extension.id)}">${
+    }"> | <h3><a href="${createLink(getExtensionId(extension))}">${
       extension.displayName
     }</a></h3>${extension.shortDescription.replaceAll("\n", " ")} |`;
   });

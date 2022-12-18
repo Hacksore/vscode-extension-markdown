@@ -31,9 +31,17 @@ export interface Publisher {
   isDomainVerified: boolean;
 }
 
+type AssetType = `Microsoft.VisualStudio.${'Code.Manifest' | 'Services.Content.Changelog' | 'Services.Content.Details' | 'Services.Content.License' | 'Services.Icons.Default' | 'Services.Icons.Small' | 'Services.VsixManifest' | 'Services.VSIXPackage'}`;
+
+export interface File {
+  assetType: AssetType;
+  source: string;
+}
+
 export interface Version {
   version: string;
   flags: string;
+  files: File[];
   lastUpdated: string;
   assetUri: string;
   fallbackAssetUri: string;
