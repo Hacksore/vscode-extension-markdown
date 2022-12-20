@@ -1,6 +1,12 @@
 # exdump
 
-You just run `npx exdump` and it will put all your extensions into a nice markdown table and copy it to your clipboard.
+A CLI to create a nice markdown table of your VS Code extensions. Handy for dotfiles repos.
+
+To use:
+
+1. `npx exdump` will copy the markdown to your clipboard
+2. `npx exdump --file out.md` will create a file with that data instead.
+
 
 | Icon | Extension |
 | --- | --- |
