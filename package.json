@@ -1,0 +1,26 @@
+{
+  "name": "exdump",
+  "version": "0.0.2",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=17.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.16",
+    "tsx": "^3.12.1",
+    "typescript": "^4.9.4"
+  },
+  "scripts": {
+    "start": "tsc -w",
+    "build": "tsc",
+    "dev": "tsx src/index.ts"
+  },
+  "bin": {
+    "extdump": "./dist/index.js"
+  },
+  "dependencies": {
+    "clipboardy": "^3.0.0"
+  }
+}
