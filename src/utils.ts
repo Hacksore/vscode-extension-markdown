@@ -1,4 +1,21 @@
 import { Extension, Version } from "./types";
+import { execSync } from "child_process";
+
+export function resultIsExtension(
+  result: PromiseSettledResult<Extension>
+): result is PromiseFulfilledResult<Extension> {
+  return (
+    result.status === "fulfilled" &&
+    result.value?.hasOwnProperty("extensionName")
+  );
+}
+
+export function getAllExtensions() {
+  return execSync("code --list-extensions")
+    .toString()
+    .split("\n")
+    .filter(Boolean);
+}
 
 export async function getExtensionData(id: string) {
   const body = {
@@ -28,11 +45,11 @@ export async function getExtensionData(id: string) {
       body: JSON.stringify(body),
     }
   )
-  .then(res => res.json())
-  .catch(err => {
-    console.log("Error getting " + id);
-    console.log(err);
-  })
+    .then((res) => res.json())
+    .catch((err) => {
+      console.log("Error getting " + id);
+      console.log(err);
+    });
 
   return payload.results[0].extensions[0];
 }
@@ -46,16 +63,24 @@ function getExtensionId(extension: Extension) {
 }
 
 function getIcon(latestVersion: Version) {
-  const icon =  latestVersion.files.find(file => file.assetType === 'Microsoft.VisualStudio.Services.Icons.Small');
+  const icon = latestVersion.files.find(
+    (file) => file.assetType === "Microsoft.VisualStudio.Services.Icons.Small"
+  );
   const defaultIcon = `https://cdn.vsassets.io/v/M213_20221206.3/_content/Header/default_icon_128.png`;
   return icon ? icon.source : defaultIcon;
 }
 
+/**
+ * Create a table that should work well on a github readme file
+ * @link see more about the GH spec here https://github.github.com/gfm/
+ */
 export function createMarkdownTable(extensions: Extension[]) {
   const rows = extensions.map((extension) => {
     const [latestVersion] = extension.versions;
 
-    return `| <a href="${createLink(getExtensionId(extension))}"><img width="100" src="${getIcon(latestVersion)}" alt="${
+    return `| <a href="${createLink(
+      getExtensionId(extension)
+    )}"><img width="100" src="${getIcon(latestVersion)}" alt="${
       extension.displayName
     }"> | <h3><a href="${createLink(getExtensionId(extension))}">${
       extension.displayName

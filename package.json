@@ -1,7 +1,6 @@
 {
   "name": "exdump",
   "version": "0.0.2",
-  "main": "index.js",
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -15,12 +14,13 @@
   "scripts": {
     "start": "tsc -w",
     "build": "tsc",
-    "dev": "tsx src/index.ts"
+    "test": "tsx src/index.ts -f EXAMPLE.md"
   },
   "bin": {
-    "extdump": "./dist/index.js"
+    "exdump": "./dist/index.js"
   },
   "dependencies": {
     "clipboardy": "^3.0.0"
-  }
+  },
+  "packageManager": "yarn@1.22.19"
 }
