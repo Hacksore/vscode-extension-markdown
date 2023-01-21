@@ -3,6 +3,10 @@
   "version": "0.0.3",
   "license": "MIT",
   "type": "module",
+  "author": "Hacksore",
+  "contributors": [
+    "wesbos"
+  ],
   "engines": {
     "node": ">=17.5.0"
   },
