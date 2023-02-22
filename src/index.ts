@@ -26,13 +26,15 @@ async function run() {
     .map((result) => result.value);
   const markdownTableString = createMarkdownTable(allExtensions);
 
-  const flagIndex =
-    process.argv.indexOf("--file") || process.argv.indexOf("-f");
-  console.log(process.argv);
+  const flags = ["-f", "--file"];
+  const flagIndex = process.argv.findIndex((val) => flags.includes(val));
   const file = flagIndex >= 0 ? process.argv[flagIndex + 1] : undefined;
 
   if (file) {
+    // make the file path if it does not exist, no-op if it does
     await mkdir(path.dirname(file), { recursive: true });
+
+    // write the list to the file
     await writeFile(file, markdownTableString);
     console.log(`\n🥳 Extension list now in ${file}`);
   } else {
