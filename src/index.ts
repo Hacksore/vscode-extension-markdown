@@ -12,18 +12,20 @@ import {
 } from "./utils.js";
 
 async function run() {
-  console.log("Getting list of extensions with `code --list-extensions ");
+  console.log("🔎 Getting list of extensions with `code --list-extensions`");
   const extensionList = getAllExtensions();
-  console.info(`Found ${extensionList.length} extensions!`);
+  console.info(`✅ Found ${extensionList.length} extensions!`);
 
   // Fetch all extension concurrently. This seems to work, but if it's ever blocked, we might need to switch back to doing one at a time.
   const allExtensionPromises = await Promise.allSettled<Extension>(
     extensionList.map(getExtensionData)
   );
-
+ 
+  // gets all the fulfilled promises
   const allExtensions = allExtensionPromises
     .filter(resultIsExtension)
     .map((result) => result.value);
+
   const markdownTableString = createMarkdownTable(allExtensions);
 
   const flags = ["-f", "--file"];
@@ -37,10 +39,12 @@ async function run() {
     // write the list to the file
     await writeFile(file, markdownTableString);
     console.log(`\n🥳 Extension list now in ${file}`);
-  } else {
-    clipboardy.writeSync(markdownTableString);
-    console.log("\n🥳 Extension list markdown table copied to clipboard!");
-  }
+    return
+  }   
+
+  clipboardy.writeSync(markdownTableString);
+  console.log("\n🥳 Extension list markdown table copied to clipboard!");
+  
 }
 
 run();

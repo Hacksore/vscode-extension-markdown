@@ -1,4 +1,4 @@
-import { Extension, Version } from "./types";
+import { Extension, MarketplaceLookupResponse, Version } from "./types";
 import { execSync } from "child_process";
 
 export function resultIsExtension(
@@ -17,7 +17,12 @@ export function getAllExtensions() {
     .filter(Boolean);
 }
 
-export async function getExtensionData(id: string) {
+/**
+ * Lookup the extension data from the marketplace API
+ * @param id the id of the VSCode extension
+ * @returns
+ */
+export async function getExtensionData(id: string): Promise<Extension> {
   const body = {
     assetTypes: null,
     filters: [
@@ -34,24 +39,24 @@ export async function getExtensionData(id: string) {
     flags: 2151,
   };
 
-  const payload = await fetch(
-    "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json;api-version=7.1-preview.1;excludeUrls=true",
-      },
-      body: JSON.stringify(body),
-    }
-  )
-    .then((res) => res.json())
-    .catch((err) => {
-      console.log("Error getting " + id);
-      console.log(err);
-    });
-
-  return payload.results[0].extensions[0];
+  try {
+    const response = await fetch(
+      "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json;api-version=7.1-preview.1;excludeUrls=true",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+    const payload: MarketplaceLookupResponse = (await response.json());
+    return payload.results[0].extensions[0];
+  } catch (err: any) {
+    console.error(`💀 Failed to fetch the extension "${id}" on the VSCode marketplace`);
+    return Promise.reject();
+  }
 }
 
 export function createLink(id: string) {
@@ -87,9 +92,9 @@ export function createMarkdownTable(extensions: Extension[]) {
     }</a></h3>${extension.shortDescription.replaceAll("\n", " ")} |`;
   });
 
-  const markdownTable = `| Icon | Extension |
-| --- | --- |
-${rows.join(`\n`)}
-`;
+  let markdownTable = "| Icon | Extension |\n";
+  markdownTable += "| --- | --- |\n";
+  markdownTable += rows.join("\n");
+
   return markdownTable;
 }

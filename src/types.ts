@@ -1,3 +1,14 @@
+export interface MarketplaceLookupResponse {
+  results: { 
+    extensions: Extension[]
+  }[],
+  pagingToken: null | string,
+  resultMetadata: any[]
+}
+
+/**
+ * Shape of an extensions
+ */
 export interface Extension {
   publisher: Publisher;
   /**

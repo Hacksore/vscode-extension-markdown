@@ -8,10 +8,10 @@ A CLI to create a nice markdown table of your VS Code extensions. Handy for dotf
 ### Usage
 ```sh
 # will copy the markdown to your clipboard
-npx exdump
+npx exdump@latest
 
 # will create a file with that data instead
-npx exdump --file out.md
+npx exdump@latest -f extensions.md
 ```
 
 ## Development
